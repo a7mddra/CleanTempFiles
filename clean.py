@@ -1,26 +1,24 @@
 import os
 import shutil
 import ctypes
-import winshell  # Requires "winshell" module to handle Recycle Bin
+import winshell
 
-# Paths to the folders
 temp_folders = [
-    os.getenv('TEMP'),  # Windows Temp folder
-    os.getenv('USERPROFILE') + '\\AppData\\Local\\Temp',  # %temp% folder
-    os.getenv('USERPROFILE') + '\\AppData\\Roaming\\Microsoft\\Windows\\Recent',  # Recent folder
-    'C:\\Windows\\Prefetch',  # Prefetch folder
-    'C:\\Windows\\SoftwareDistribution\\Download',  # Windows Update Cache
-    'C:\\ProgramData\\Microsoft\\Windows\\WER',  # Windows Error Reporting
-    os.getenv('USERPROFILE') + '\\AppData\\Local\\Microsoft\\Windows\\INetCache',  # Temporary Internet Files
-    'C:\\Windows\\Temp',  # System Temp folder
-    os.getenv('USERPROFILE') + '\\AppData\\Local\\Microsoft\\Windows\\Explorer',  # Thumbnails Cache
-    os.getenv('USERPROFILE') + '\\AppData\\Local\\Microsoft\\DirectX Shader Cache',  # DirectX Shader Cache
-    'C:\\ProgramData\\Microsoft\\Windows\\DeliveryOptimization',  # Delivery Optimization
-    'C:\\Windows\\Logs',  # Windows Logs
-    'C:\\Windows\\System32\\DriverStore\\FileRepository'  # Old Driver Store
+    os.getenv('TEMP'),
+    os.getenv('USERPROFILE') + '\\AppData\\Local\\Temp',
+    os.getenv('USERPROFILE') + '\\AppData\\Roaming\\Microsoft\\Windows\\Recent',
+    'C:\\Windows\\Prefetch',
+    'C:\\Windows\\SoftwareDistribution\\Download',
+    'C:\\ProgramData\\Microsoft\\Windows\\WER',
+    os.getenv('USERPROFILE') + '\\AppData\\Local\\Microsoft\\Windows\\INetCache',
+    'C:\\Windows\\Temp',
+    os.getenv('USERPROFILE') + '\\AppData\\Local\\Microsoft\\Windows\\Explorer',
+    os.getenv('USERPROFILE') + '\\AppData\\Local\\Microsoft\\DirectX Shader Cache',
+    'C:\\ProgramData\\Microsoft\\Windows\\DeliveryOptimization',
+    'C:\\Windows\\Logs',
+    'C:\\Windows\\System32\\DriverStore\\FileRepository'
 ]
 
-# Function to delete files and folders permanently (Shift+Delete)
 def delete_files_permanently(folder_path):
     for root, dirs, files in os.walk(folder_path):
         for file in files:
@@ -38,7 +36,6 @@ def delete_files_permanently(folder_path):
             except Exception as e:
                 print(f"Skipping folder {dir_path}: {e}")
 
-# Function to empty Recycle Bin
 def empty_recycle_bin():
     try:
         winshell.recycle_bin().empty(confirm=False, show_progress=False, sound=True)
@@ -46,7 +43,6 @@ def empty_recycle_bin():
     except Exception as e:
         print(f"Error emptying Recycle Bin: {e}")
 
-# Check if running as admin (needed to access certain folders)
 def is_admin():
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
@@ -62,7 +58,6 @@ if __name__ == "__main__":
             else:
                 print(f"Folder not found or invalid: {folder}")
         
-        # Empty the Recycle Bin after deleting files
         empty_recycle_bin()
 
     else:
