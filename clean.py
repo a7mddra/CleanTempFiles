@@ -1,19 +1,18 @@
 import os
 import shutil
 import ctypes
-import winshell
 
 temp_folders = [
     os.getenv('TEMP'),
-    os.getenv('USERPROFILE') + '\\AppData\\Local\\Temp',
-    os.getenv('USERPROFILE') + '\\AppData\\Roaming\\Microsoft\\Windows\\Recent',
+    os.path.join(os.getenv('USERPROFILE'), 'AppData\\Local\\Temp'),
+    os.path.join(os.getenv('USERPROFILE'), 'AppData\\Roaming\\Microsoft\\Windows\\Recent'),
     'C:\\Windows\\Prefetch',
     'C:\\Windows\\SoftwareDistribution\\Download',
     'C:\\ProgramData\\Microsoft\\Windows\\WER',
-    os.getenv('USERPROFILE') + '\\AppData\\Local\\Microsoft\\Windows\\INetCache',
+    os.path.join(os.getenv('USERPROFILE'), 'AppData\\Local\\Microsoft\\Windows\\INetCache'),
     'C:\\Windows\\Temp',
-    os.getenv('USERPROFILE') + '\\AppData\\Local\\Microsoft\\Windows\\Explorer',
-    os.getenv('USERPROFILE') + '\\AppData\\Local\\Microsoft\\DirectX Shader Cache',
+    os.path.join(os.getenv('USERPROFILE'), 'AppData\\Local\\Microsoft\\Windows\\Explorer'),
+    os.path.join(os.getenv('USERPROFILE'), 'AppData\\Local\\Microsoft\\DirectX Shader Cache'),
     'C:\\ProgramData\\Microsoft\\Windows\\DeliveryOptimization',
     'C:\\Windows\\Logs',
     'C:\\Windows\\System32\\DriverStore\\FileRepository'
@@ -38,7 +37,8 @@ def delete_files_permanently(folder_path):
 
 def empty_recycle_bin():
     try:
-        winshell.recycle_bin().empty(confirm=False, show_progress=False, sound=True)
+        # Use ctypes to empty the recycle bin
+        ctypes.windll.shell32.SHEmptyRecycleBinW(None, None, 0x00000001)
         print("Recycle Bin emptied successfully.")
     except Exception as e:
         print(f"Error emptying Recycle Bin: {e}")
@@ -59,6 +59,5 @@ if __name__ == "__main__":
                 print(f"Folder not found or invalid: {folder}")
         
         empty_recycle_bin()
-
     else:
         print("Please run this script as Administrator.")
